@@ -1,0 +1,20 @@
+/* Estados de carga compartidos: rápidos, accesibles y sin dependencias. */
+.btn.is-loading { cursor: wait; opacity: .88; transform: none; }
+.btn:disabled { cursor: not-allowed; opacity: .7; box-shadow: none; transform: none; }
+.button-spinner, .page-loader-spinner { display: inline-block; width: 15px; height: 15px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .65s linear infinite; vertical-align: -2px; }
+.page-loader { position: fixed; top: 18px; left: 50%; z-index: 10000; display: flex; align-items: center; gap: 9px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); box-shadow: var(--shadow-hover); color: var(--text); font-size: 12px; font-weight: 750; opacity: 0; pointer-events: none; transform: translate(-50%, -12px) scale(.97); transition: opacity .2s ease, transform .2s ease; }
+.page-loader.active { opacity: 1; transform: translate(-50%, 0) scale(1); }
+.page-loader-spinner { color: var(--primary); }
+.ai-loading { display: flex; align-items: center; gap: 9px; animation: fade-slide-in .2s ease both; }
+.ai-loading[hidden] { display: none; }
+.ai-loading::before { content: ''; width: 15px; height: 15px; border: 2px solid var(--primary); border-right-color: transparent; border-radius: 50%; animation: spin .65s linear infinite; }
+.modal.active .modal-content { animation: modal-content-in .24s ease both; }
+.panel, .metrics article, tbody tr, .btn, .icon-btn, input, select, textarea { transition-duration: .22s; }
+.skeleton { position: relative; overflow: hidden; min-height: 46px; }
+.skeleton::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,.38) 45%, transparent 70%); animation: skeleton-sweep 1s ease-in-out infinite; }
+body.dark .skeleton::after { background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,.08) 45%, transparent 70%); }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fade-slide-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes modal-content-in { from { opacity: 0; transform: translateY(8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes skeleton-sweep { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }

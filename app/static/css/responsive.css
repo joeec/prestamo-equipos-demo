@@ -1,0 +1,139 @@
+/* Layout overrides: centered content at every viewport size. */
+:root { --primary: #5b2ca5; --primary-soft: #f0eaff; --nav: #1d1230; }
+body.dark { --primary: #a57aff; --primary-soft: #33234d; --nav: #120a20; }
+.main {
+  /* Do not use transform here: it breaks fixed-position modals. */
+  animation: pageFade .24s ease both;
+}
+
+@keyframes pageFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.main {
+  width: calc(100% - 248px);
+  max-width: none;
+  margin-left: 248px;
+}
+
+.main > .topbar,
+.main > section,
+.main > .toolbar,
+.main > .back {
+  width: min(100%, 1400px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.main > .topbar { margin-bottom: 28px; }
+
+@media (max-width: 850px) {
+  .main { width: 100%; margin-left: 0; }
+  .main > .topbar,
+  .main > section,
+  .main > .toolbar,
+  .main > .back { width: 100%; }
+}
+
+@media (max-width: 520px) {
+  .main { padding-left: 14px; padding-right: 14px; }
+  .topbar { gap: 10px; }
+  .topbar h1 { font-size: 23px; }
+  .modal { padding: 10px; }
+  .modal-content { padding: 18px; }
+  .table-scroll { margin-left: -2px; margin-right: -2px; }
+}
+
+/* Keep every creation/edit modal centered without moving the page behind it. */
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  min-height: 100dvh;
+  z-index: 9999;
+  overflow-y: auto;
+  padding: 24px;
+  background: rgba(7, 17, 36, .72);
+}
+
+.modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  width: min(720px, 100%);
+  height: auto;
+  max-height: calc(100dvh - 48px);
+  min-height: 0;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-y: auto;
+}
+
+/* Larger forms use the same compact card proportions as "Registrar equipo". */
+@media (min-width: 900px) {
+  .modal-content .form-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .modal-content .form-grid textarea {
+    min-height: 64px;
+  }
+}
+
+body.modal-open { overflow: hidden; }
+
+@media (max-height: 760px), (max-width: 600px) {
+  .modal.active { align-items: flex-start; }
+  .modal-content { margin: 18px 0; max-height: calc(100dvh - 36px); }
+}
+
+@media (max-width: 899px) {
+  .modal-content .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 520px) {
+  .modal-content .form-grid { grid-template-columns: 1fr; }
+}
+
+.qr-popup .modal-content { width: min(420px, 100%); }
+.qr-modal:target { display: flex; align-items: center; justify-content: center; }
+.qr-modal .close { display: grid; flex: 0 0 38px; place-items: center; text-decoration: none; }
+.delete-error-card { width: min(440px, 100%); }
+.delete-confirm-modal:target { display: flex; align-items: center; justify-content: center; }
+.delete-confirm-card { width: min(460px, 100%); }
+.delete-confirm-card .close { display: grid; flex: 0 0 38px; place-items: center; text-decoration: none; }
+.delete-confirm-card > p { margin: 20px 0 4px; color: var(--muted); line-height: 1.6; }
+.delete-confirm-card .danger-action { border-color: var(--danger); background: var(--danger); color: #fff; }
+.delete-confirm-card .modal-actions form { margin: 0; }
+.delete-error-card .close { display: grid; flex: 0 0 38px; place-items: center; text-decoration: none; }
+.delete-error-card > p { margin: 20px 0 4px; color: var(--muted); line-height: 1.6; }
+
+@media (max-width: 520px) {
+  .delete-error-card { width: 100%; padding: 20px 16px; }
+  .delete-error-card .modal-header { align-items: flex-start; }
+  .delete-error-card .modal-header h2 { font-size: 20px; }
+  .delete-error-card .modal-actions { width: 100%; }
+  .delete-error-card .modal-actions .btn { width: 100%; }
+  .delete-confirm-card { width: 100%; padding: 20px 16px; }
+  .delete-confirm-card .modal-header { align-items: flex-start; }
+  .delete-confirm-card .modal-header h2 { font-size: 20px; }
+  .delete-confirm-card .modal-actions { display: grid; width: 100%; grid-template-columns: 1fr; }
+  .delete-confirm-card .modal-actions form,
+  .delete-confirm-card .modal-actions .btn { width: 100%; }
+}
+.qr-popup-image { display: grid; place-items: center; padding: 20px 0 8px; }
+.qr-popup-image img { width: min(270px, 75vw); aspect-ratio: 1; padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+.qr-service-tag { display: inline-block; padding: 4px 8px; border-radius: 20px; background: var(--primary-soft); color: var(--primary); font-size: 11px; font-weight: 750; }
+.qr-serial { display: inline-block; margin-left: 4px; padding: 4px 8px; border-radius: 20px; background: var(--surface-alt); color: var(--muted); font-size: 11px; font-weight: 750; }
+.toolbar-actions{display:flex;gap:10px;align-items:center}.ai-modal{width:min(760px,100%)}.ai-search{display:flex;gap:10px;align-items:end;margin:18px 0}.ai-search label{display:grid;gap:7px;flex:1;font-weight:700}.ai-loading{padding:12px;color:var(--primary);font-weight:700}.ai-preview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:16px;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--surface-alt)}.ai-preview-row{display:grid;gap:4px;padding:8px;border-radius:7px;background:var(--surface);font-size:12px}.ai-preview-row span,.ai-preview-row{color:var(--muted)}.ai-preview-row strong{color:var(--text)}.ai-preview-row select{padding:6px 8px}.ai-warning{grid-column:1/-1;margin:0;padding:9px;border-left:3px solid var(--warning);background:#fff2db;color:var(--warning);font-size:12px}@media(max-width:650px){.toolbar-actions{width:100%}.toolbar-actions .btn{flex:1}.ai-search{align-items:stretch;flex-direction:column}.ai-preview{grid-template-columns:1fr}}
+.ai-demo-notice{display:grid;gap:5px;margin-top:14px;padding:12px 14px;border:1px solid color-mix(in srgb,var(--primary) 28%,transparent);border-radius:10px;background:color-mix(in srgb,var(--primary) 7%,var(--surface));font-size:12px;line-height:1.5}.ai-demo-notice strong{color:var(--primary)}.ai-demo-notice span{color:var(--muted)}
+.components-panel .panel-title{align-items:flex-start;margin-bottom:20px}.components-panel .panel-title h2{margin-top:2px}.spec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;width:100%}.spec-item{display:flex;flex-direction:column;justify-content:center;min-height:78px;padding:14px 16px;border:1px solid var(--border);border-radius:12px;background:var(--surface-alt);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.spec-item:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--primary) 35%,var(--border));box-shadow:0 8px 20px rgba(32,42,67,.07)}.spec-item span{margin-bottom:6px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}.spec-item strong{color:var(--text);font-size:14px;line-height:1.35;overflow-wrap:anywhere}.signature-pill{padding:5px 9px;border:1px solid color-mix(in srgb,var(--primary) 28%,var(--border));border-radius:8px;background:color-mix(in srgb,var(--primary) 7%,var(--surface));color:var(--primary);font:inherit;font-size:12px;font-weight:700;cursor:pointer}.signature-pill:hover{background:color-mix(in srgb,var(--primary) 13%,var(--surface))}.signature-help{margin:0 0 10px;color:var(--muted);font-size:12px;line-height:1.45}.signature-viewer{z-index:10001}.signature-viewer .modal-content{max-width:660px}.signature-demo-label{margin:0 0 12px;padding:9px 12px;border-left:3px solid var(--warning);background:#fff2db;color:#8a5a00;font-size:12px;font-weight:700}.signature-document{overflow:hidden;border:1px solid var(--border);border-radius:13px;background:#fff}.signature-document>img{display:block;width:100%;height:190px;object-fit:contain;border-bottom:1px solid var(--border)}.signature-document dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:0}.signature-document dl div{padding:12px 15px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}.signature-document dt{color:#667085;font-size:10px;font-weight:800;text-transform:uppercase}.signature-document dd{margin:4px 0 0;color:#172033;font-size:13px;font-weight:700}@media(max-width:650px){.spec-grid{grid-template-columns:1fr 1fr}.signature-document dl{grid-template-columns:1fr}}@media(max-width:430px){.spec-grid{grid-template-columns:1fr}}
