@@ -3,21 +3,895 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Demo offline de gestión de activos tecnológicos">
-  <title>IT Asset Manager · Demo</title>
-  <link rel="icon" href="app/static/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="app/static/css/style.css">
-  <link rel="stylesheet" href="app/static/css/responsive.css">
-  <link rel="stylesheet" href="app/static/css/loading.css">
-  <link rel="stylesheet" href="app/static/css/sidebar.css">
-  <link rel="stylesheet" href="app/static/css/login.css">
-  <link rel="stylesheet" href="app/static/css/about.css">
+  <title>IT Asset Manager V3 · Demo</title>
+  <link rel="icon" href="static/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/responsive.css">
+  <link rel="stylesheet" href="static/css/loading.css">
+  <link rel="stylesheet" href="static/css/sidebar.css">
+  <link rel="stylesheet" href="static/css/about.css">
+  <link rel="stylesheet" href="static/css/login.css">
+  <style>
+    /* Estilos adicionales para la barra de control Demo y Documento Imprimible */
+    .demo-banner {
+      background: linear-gradient(90deg, #181432 0%, #2f1d6b 100%);
+      color: #e0e7ff;
+      font-size: 12px;
+      padding: 6px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      z-index: 100;
+      position: sticky;
+      top: 0;
+    }
+    .demo-banner strong {
+      color: #fff;
+      font-weight: 600;
+    }
+    .demo-banner .demo-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .demo-btn-sm {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.22);
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .demo-btn-sm:hover {
+      background: rgba(255,255,255,0.22);
+      border-color: rgba(255,255,255,0.4);
+    }
+    .btn-role-admin {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-role-admin:hover {
+      filter: brightness(0.95);
+    }
+    .btn-role-visitor {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid var(--warning-border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-role-visitor:hover {
+      filter: brightness(0.95);
+    }
+
+    /* Acta de Entrega PDF Modal Styles */
+    .acta-modal-content {
+      max-width: 760px !important;
+      background: #ffffff !important;
+      color: #0f172a !important;
+    }
+    body.dark .acta-modal-content {
+      background: #1e293b !important;
+      color: #f8fafc !important;
+    }
+    .acta-print-sheet {
+      padding: 8px;
+      font-family: inherit;
+    }
+    .acta-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .acta-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .acta-logo {
+      font-size: 26px;
+      color: var(--primary);
+    }
+    .acta-brand h3 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -0.2px;
+    }
+    .acta-brand p {
+      margin: 2px 0 0;
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .acta-folio {
+      text-align: right;
+    }
+    .acta-folio strong {
+      display: block;
+      font-size: 13px;
+      color: var(--primary);
+    }
+    .acta-folio small {
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .acta-section h4 {
+      margin: 14px 0 6px;
+      font-size: 11px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .acta-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .acta-table td {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+    }
+    .acta-table td:nth-child(odd) {
+      background: rgba(0,0,0,0.03);
+      width: 24%;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    body.dark .acta-table td:nth-child(odd) {
+      background: rgba(255,255,255,0.04);
+    }
+
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #modalActaPDF, #modalActaPDF * {
+        visibility: visible !important;
+      }
+      #modalActaPDF {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 20px !important;
+        background: #fff !important;
+        color: #000 !important;
+        display: block !important;
+      }
+      .modal-header, .modal-actions, .close, .demo-banner {
+        display: none !important;
+      }
+      .acta-table td {
+        border-color: #ccc !important;
+        color: #000 !important;
+      }
+      .acta-table td:nth-child(odd) {
+        background: #f1f5f9 !important;
+        color: #333 !important;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div id="app" aria-live="polite"></div>
-  <noscript>Esta demostración necesita JavaScript habilitado.</noscript>
-  <script src="app/static/js/demo-data.js"></script>
-  <script src="app/static/js/qrcode.js"></script>
-  <script src="app/static/js/demo-app.js"></script>
+  <!-- Barra de Notificación y Controles Demo -->
+  <aside class="demo-banner">
+    <div>
+      <span>⚡ <strong>IT Asset Manager Demo</strong> · Funcionamiento 100% en navegador (LocalStorage + IA prehecha sin n8n)</span>
+    </div>
+    <div class="demo-actions">
+      <button class="demo-btn-sm" type="button" onclick="toggleUserRole()">
+        <span>👤 Cambiar Rol (Admin/Visitante)</span>
+      </button>
+      <button class="demo-btn-sm" type="button" onclick="restablecerDemo()">
+        <span>🔄 Restablecer datos</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Sidebar Lateral -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <a class="brand" href="#/dashboard">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </span>
+        <span class="brand-copy"><strong>IT Asset</strong><small>Manager</small></span>
+        <span class="brand-version">V3 Demo</span>
+      </a>
+      <button class="sidebar-collapse" type="button" aria-label="Contraer menú" title="Contraer menú">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="sidebar-close" type="button" aria-label="Cerrar menú" onclick="document.getElementById('sidebar').classList.remove('open')">×</button>
+    </div>
+
+    <div class="sidebar-navigation">
+      <div class="nav-section">
+        <p class="nav-label">Principal</p>
+        <nav class="menu" aria-label="Navegación principal">
+          <a href="#/dashboard"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span class="nav-text"><strong>Resumen</strong></span></a>
+          <a href="#/loans"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg></span><span class="nav-text"><strong>Entrega de laptops</strong></span></a>
+          <a class="nav-section-admin" href="#/loans?new=1"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span><span class="nav-text"><strong>Nuevo préstamo</strong></span></a>
+        </nav>
+      </div>
+
+      <div class="nav-section nav-section-admin">
+        <p class="nav-label">Operaciones</p>
+        <nav class="menu" aria-label="Operaciones">
+          <a href="#/laptops"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span><span class="nav-text"><strong>Equipos</strong></span></a>
+          <a href="#/employees"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-text"><strong>Personas</strong></span></a>
+          <a href="#/accessories"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span><span class="nav-text"><strong>Accesorios</strong></span></a>
+          <a href="#/incidents"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="nav-text"><strong>Incidencias</strong></span></a>
+          <a href="#/maintenance"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span><span class="nav-text"><strong>Mantenimiento</strong></span></a>
+        </nav>
+      </div>
+
+      <div class="nav-section nav-section-admin">
+        <p class="nav-label">Administración</p>
+        <nav class="menu" aria-label="Administración">
+          <a href="#/users"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span class="nav-text"><strong>Usuarios</strong></span></a>
+          <a href="#/audit"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span><span class="nav-text"><strong>Auditoría</strong></span></a>
+          <a href="#/diagnostics"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span><span class="nav-text"><strong>Diagnóstico n8n</strong></span></a>
+        </nav>
+      </div>
+
+      <div class="nav-section nav-section-last">
+        <nav class="menu" aria-label="Sistema">
+          <a href="#/about"><span class="nav-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><span class="nav-text"><strong>Acerca del sistema</strong></span></a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="sidebar-foot">
+      <span class="user-avatar" aria-hidden="true">A</span>
+      <span class="user-copy"><strong>admin</strong><small><i></i>Administrador</small></span>
+      <a href="#/login" class="logout" title="Cerrar sesión / Cambiar cuenta" aria-label="Cerrar sesión">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </a>
+    </div>
+  </aside>
+  <button class="sidebar-backdrop" type="button" aria-label="Cerrar menú" onclick="document.getElementById('sidebar').classList.remove('open')"></button>
+
+  <!-- Contenedor Principal -->
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" aria-label="Abrir menú">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div>
+          <p class="eyebrow" id="page-eyebrow">PANEL DE ADMINISTRACIÓN</p>
+          <h1 id="page-heading">Resumen</h1>
+        </div>
+      </div>
+      <div class="topbar-right" style="display:flex;align-items:center;gap:10px">
+        <button id="btnRoleToggle" class="btn-role-admin" type="button" onclick="toggleUserRole()" title="Alternar entre Administrador y Visitante">
+          👤 Modo Admin
+        </button>
+        <button class="theme-toggle" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Contenedor dinámico de vistas SPA -->
+    <div id="app-content"></div>
+  </main>
+
+  <!-- =========================================================================
+       MODALES DE LA APLICACIÓN
+       ========================================================================= -->
+
+  <!-- Modal 1: Registrar / Editar Equipo -->
+  <div class="modal" id="modalLaptop">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2>Registrar equipo tecnológico</h2>
+          <p>Ingresa los identificadores principales y el estado del activo en inventario.</p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalLaptop')">×</button>
+      </div>
+      <form id="laptopCreateForm" onsubmit="guardarEquipo(event)">
+        <input type="hidden" name="laptop_id" value="">
+        <div class="form-grid">
+          <label>
+            Service Tag / Identificador
+            <input name="service_tag" placeholder="Ej: DEL-5440-03" required autofocus>
+          </label>
+          <label>
+            Número de serie
+            <input name="serial" placeholder="Ej: 8HG4KL2" required>
+          </label>
+          <label>
+            Marca del fabricante
+            <input name="marca" placeholder="Ej: Dell, Lenovo, HP, Apple" required>
+          </label>
+          <label>
+            Modelo comercial
+            <input name="modelo" placeholder="Ej: Latitude 5440, ThinkPad T14" required>
+          </label>
+          <label>
+            Estado operativo
+            <select name="estado">
+              <option value="Disponible">Disponible</option>
+              <option value="Para préstamo">Para préstamo</option>
+              <option value="No disponible">No disponible</option>
+              <option value="Mantenimiento">Mantenimiento</option>
+              <option value="Dañado">Dañado</option>
+            </select>
+          </label>
+          <label style="grid-column: 1 / -1">
+            Observaciones o notas del equipo
+            <textarea name="observaciones" placeholder="Cargador original, detalles estéticos, etc."></textarea>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn secondary" type="button" onclick="cerrarModal('modalLaptop')">Cancelar</button>
+          <button class="btn primary" type="submit">Guardar equipo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Añadir con IA (Emulado localmente) -->
+  <div class="modal" id="modalLaptopAI">
+    <div class="modal-content ai-modal">
+      <div class="modal-header">
+        <div>
+          <h2>Añadir especificaciones con IA</h2>
+          <p>Busca los componentes y características recomendadas por modelo (Motor Gemini Local).</p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalLaptopAI')">×</button>
+      </div>
+      <div class="ai-search">
+        <label>
+          Modelo del equipo a buscar
+          <input id="aiSearchQuery" maxlength="150" placeholder="Ejemplo: Dell Latitude 5440, ThinkPad T14, MacBook Pro M3..." onkeydown="if(event.key === 'Enter') { event.preventDefault(); buscarEspecificacionesIA(); }">
+        </label>
+        <button id="aiSearchButton" class="btn primary" type="button" onclick="buscarEspecificacionesIA()">Buscar especificaciones</button>
+      </div>
+      <div id="aiLoading" class="ai-loading" hidden>Consultando especificaciones con motor de IA local…</div>
+      <div id="aiError" class="alert alert-danger" hidden></div>
+      <div id="aiPreview" class="ai-preview" hidden></div>
+      <div class="modal-actions">
+        <button class="btn secondary" type="button" onclick="cerrarModal('modalLaptopAI')">Cancelar</button>
+        <button id="aiApplyButton" class="btn primary" type="button" hidden onclick="aplicarEspecificacionesIA()">Aplicar al formulario</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Disponibilidad de Equipo -->
+  <div class="modal" id="modalAvailability">
+    <div class="modal-content confirm-card">
+      <div class="modal-header">
+        <div>
+          <h2>Disponibilidad del equipo</h2>
+          <p id="avail-title">—</p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalAvailability')">×</button>
+      </div>
+      <div id="avail-loan-warning" style="display:none;margin-bottom:12px;padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.4;border-left:4px solid var(--warning);background:rgba(234,179,8,0.12);color:var(--text)">
+        <strong>Equipo en préstamo:</strong> Se encuentra asignado a un colaborador. Para liberar su disponibilidad, registra su devolución desde el módulo de préstamos.
+      </div>
+      <form id="avail-form" onsubmit="guardarDisponibilidad(event)">
+        <input type="hidden" id="avail-laptop-id" value="">
+        <label>
+          Estado operativo
+          <select name="estado" id="avail-select">
+            <option value="Disponible">Disponible</option>
+            <option value="Para préstamo">Para préstamo (Eventos / Reserva)</option>
+            <option value="No disponible">No disponible</option>
+            <option value="Mantenimiento">Mantenimiento</option>
+            <option value="Dañado">Dañado</option>
+          </select>
+        </label>
+        <p class="help-text" style="color:var(--muted);font-size:12px;margin-top:8px">Un equipo fuera de disponibilidad no podrá asignarse en un nuevo préstamo.</p>
+        <div class="modal-actions">
+          <button class="btn secondary" type="button" onclick="cerrarModal('modalAvailability')">Cancelar</button>
+          <a class="btn primary" id="avail-loans-btn" href="#/loans" style="display:none" onclick="cerrarModal('modalAvailability')">Ir a Préstamos</a>
+          <button class="btn primary" id="avail-submit-btn" type="submit">Guardar estado</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: Código QR con Generador Local -->
+  <div class="modal qr-popup qr-modal" id="modalQR" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2 id="qr-title">—</h2>
+          <p>
+            <span id="qr-service-tag" class="qr-service-tag">Service Tag: —</span>
+            <span id="qr-serial" class="qr-serial">Serial: —</span>
+          </p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalQR')">×</button>
+      </div>
+      <div class="qr-popup-image" id="qr-popup-image-box" style="display:flex;align-items:center;justify-content:center;min-height:230px;background:#fff;padding:12px;border-radius:12px;border:1px solid var(--border)"></div>
+      <div class="modal-actions">
+        <button class="btn secondary" type="button" onclick="cerrarModal('modalQR')">Cerrar</button>
+        <button class="btn primary" id="qr-print-btn" type="button">Imprimir QR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Asignar / Prestar Laptop -->
+  <div class="modal" id="modalLoan">
+    <div class="modal-content" style="max-width:720px">
+      <div class="modal-header">
+        <div>
+          <h2>Asignar laptop a una persona</h2>
+          <p>Completa la información del préstamo, periféricos y firmas de entrega.</p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalLoan')">×</button>
+      </div>
+      <form id="loanForm" onsubmit="guardarNuevoPrestamo(event)">
+        <div class="form-grid">
+          <label>
+            Colaborador / Receptor
+            <select name="employee_id" id="loan-employee-select" required>
+              <option value="">Cargando colaboradores…</option>
+            </select>
+          </label>
+          <label>
+            Laptop disponible
+            <select name="laptop_id" id="loan-laptop-select" required>
+              <option value="">Cargando equipos…</option>
+            </select>
+          </label>
+          <label>
+            Fecha de entrega
+            <input type="date" name="fecha_entrega" id="loan-fecha-entrega" required>
+          </label>
+          <label>
+            Fecha prevista de devolución
+            <input type="date" name="fecha_devolucion" data-return-date>
+          </label>
+          <label class="checkbox-card" style="grid-column: 1 / -1">
+            <input type="checkbox" data-indefinite-return checked>
+            <span>Asignación indefinida / sin fecha límite de devolución programada</span>
+          </label>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">
+            <span class="badge-num">1</span>
+            <span>Accesorios y Periféricos Entregados</span>
+          </div>
+          <div class="checkbox-grid" id="loan-accessories-checkboxes" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));gap:8px;margin-top:8px"></div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">
+            <span class="badge-num">2</span>
+            <span>Firmas Digitales de Conformidad</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px">
+            <div class="signature-card">
+              <div class="signature-card-header">
+                <label>Firma TI (Entrega)</label>
+                <button type="button" class="btn secondary clear-signature" style="font-size:11px;padding:2px 8px">Limpiar</button>
+              </div>
+              <div class="signature-canvas-wrap" style="height:110px">
+                <canvas class="signature-canvas"></canvas>
+                <input type="hidden" name="signature_ti">
+              </div>
+            </div>
+
+            <div class="signature-card">
+              <div class="signature-card-header">
+                <label>Firma Colaborador</label>
+                <button type="button" class="btn secondary clear-signature" style="font-size:11px;padding:2px 8px">Limpiar</button>
+              </div>
+              <div class="signature-canvas-wrap" style="height:110px">
+                <canvas class="signature-canvas"></canvas>
+                <input type="hidden" name="signature_employee">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn secondary" type="button" onclick="cerrarModal('modalLoan')">Cancelar</button>
+          <button class="btn primary" type="submit">Confirmar y Asignar Préstamo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 6: Devolución de Préstamo -->
+  <div class="modal" id="modalReturnLoan">
+    <div class="modal-content confirm-card">
+      <div class="modal-header">
+        <div>
+          <h2>Registrar Devolución de Equipo</h2>
+          <p id="return-loan-info">—</p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalReturnLoan')">×</button>
+      </div>
+      <form onsubmit="guardarDevolucionPrestamo(event)">
+        <input type="hidden" id="return-loan-id" name="loan_id" value="">
+        <div class="form-grid">
+          <label style="grid-column: 1 / -1">
+            Estado resultante del equipo tras devolución
+            <select name="laptop_state">
+              <option value="Disponible">Disponible (Listo para nuevo préstamo)</option>
+              <option value="Para préstamo">Para préstamo (Reserva / Eventos)</option>
+              <option value="Mantenimiento">Mantenimiento (Requiere limpieza o reparación)</option>
+              <option value="Dañado">Dañado</option>
+            </select>
+          </label>
+          <label style="grid-column: 1 / -1">
+            Observaciones de devolución e inspección
+            <textarea name="return_notes" placeholder="Condiciones estéticas, cargador devuelto, limpieza, etc.">Equipo devuelto en excelente estado operativo.</textarea>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn secondary" type="button" onclick="cerrarModal('modalReturnLoan')">Cancelar</button>
+          <button class="btn primary" type="submit">Confirmar Devolución</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 7: Registrar Persona / Colaborador -->
+  <div class="modal" id="modalEmployee">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2>Registrar nuevo colaborador</h2>
+          <p>Ingresa los datos personales, de contacto y área laboral del colaborador.</p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalEmployee')">×</button>
+      </div>
+      <form onsubmit="guardarPersona(event)">
+        <div class="form-grid">
+          <label>
+            Nombre completo
+            <input name="nombre" placeholder="Ej: Juan Pérez Martínez" required autofocus>
+          </label>
+          <label>
+            Cédula de identidad / ID
+            <input name="cedula" placeholder="Ej: 001-1234567-8" required>
+          </label>
+          <label>
+            Departamento o Área
+            <input name="departamento" placeholder="Ej: Operaciones, TI, Finanzas, Legal">
+          </label>
+          <label>
+            Correo institucional / personal
+            <input type="email" name="correo" placeholder="Ej: juan.perez@empresa.com">
+          </label>
+          <label style="grid-column: 1 / -1">
+            Número de teléfono / Flota
+            <input name="telefono" placeholder="Ej: +1 809 555 0192">
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn secondary" type="button" onclick="cerrarModal('modalEmployee')">Cancelar</button>
+          <button class="btn primary" type="submit">Guardar colaborador</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 8: Registrar Accesorio -->
+  <div class="modal" id="modalAccessory">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2>Registrar nuevo accesorio</h2>
+          <p>Control de suministros, periféricos y cargadores.</p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalAccessory')">×</button>
+      </div>
+      <form onsubmit="guardarAccesorio(event)">
+        <input type="hidden" name="accessory_id" value="">
+        <div class="form-grid">
+          <label>
+            Nombre del accesorio
+            <input name="nombre" placeholder="Ej: Cargador USB-C 65W Original" required autofocus>
+          </label>
+          <label>
+            Tipo / Categoría
+            <select name="tipo">
+              <option value="Cargador">Cargador</option>
+              <option value="Mouse">Mouse</option>
+              <option value="Teclado">Teclado</option>
+              <option value="Auriculares">Auriculares</option>
+              <option value="Adaptador">Adaptador</option>
+              <option value="Maletín">Maletín</option>
+              <option value="Monitor">Monitor</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </label>
+          <label>
+            Cantidad total en inventario
+            <input type="number" name="cantidad_total" min="1" value="1" required>
+          </label>
+          <label>
+            Estado del lote
+            <select name="estado">
+              <option value="Disponible">Disponible</option>
+              <option value="Baja">Baja</option>
+            </select>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn secondary" type="button" onclick="cerrarModal('modalAccessory')">Cancelar</button>
+          <button class="btn primary" type="submit">Guardar accesorio</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 9: Registrar Incidencia -->
+  <div class="modal" id="modalIncident">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2>Nueva incidencia técnica</h2>
+          <p>Registra una avería o solicitud de soporte para un activo.</p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalIncident')">×</button>
+      </div>
+      <form onsubmit="guardarIncidencia(event)">
+        <div class="form-grid">
+          <label>
+            Equipo afectado
+            <select name="laptop_id" id="incident-laptop-select" required>
+              <option value="">Selecciona el equipo</option>
+            </select>
+          </label>
+          <label>
+            Colaborador reportante
+            <select name="employee_id" id="incident-employee-select">
+              <option value="">Sin colaborador asignado</option>
+            </select>
+          </label>
+          <label>
+            Categoría del fallo
+            <input name="category" placeholder="Ej: Pantalla rota, Teclado, Batería, Sistema Operativo" required>
+          </label>
+          <label>
+            Nivel de Prioridad
+            <select name="priority">
+              <option value="Baja">Baja</option>
+              <option value="Media" selected>Media</option>
+              <option value="Alta">Alta</option>
+              <option value="Crítica">Crítica</option>
+            </select>
+          </label>
+          <label>
+            Estado inicial
+            <select name="status">
+              <option value="Abierta">Abierta</option>
+              <option value="En proceso">En proceso</option>
+              <option value="Cerrada">Cerrada</option>
+            </select>
+          </label>
+          <label style="grid-column: 1 / -1">
+            Detalle del problema
+            <textarea name="notes" placeholder="Describe el comportamiento de la falla..." required></textarea>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn secondary" type="button" onclick="cerrarModal('modalIncident')">Cancelar</button>
+          <button class="btn primary" type="submit">Registrar incidencia</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 10: Registrar Mantenimiento -->
+  <div class="modal" id="modalMaintenance">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2>Registrar Mantenimiento Técnico</h2>
+          <p>Apertura de orden de servicio o reparación de hardware.</p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalMaintenance')">×</button>
+      </div>
+      <form onsubmit="guardarMantenimiento(event)">
+        <div class="form-grid">
+          <label>
+            Equipo tecnológico
+            <select name="laptop_id" id="maintenance-laptop-select" required>
+              <option value="">Selecciona el equipo</option>
+            </select>
+          </label>
+          <label>
+            Técnico asignado
+            <select name="technician_id" id="maintenance-tech-select">
+              <option value="">Sin técnico asignado</option>
+            </select>
+          </label>
+          <label>
+            Estado del servicio
+            <select name="status">
+              <option value="Pendiente">Pendiente</option>
+              <option value="En proceso">En proceso</option>
+              <option value="Finalizado">Finalizado</option>
+            </select>
+          </label>
+          <label>
+            Fecha de Ingreso
+            <input type="date" name="received_at" id="maintenance-received-at" required>
+          </label>
+          <label>
+            Entrega Estimada
+            <input type="date" name="estimated_delivery">
+          </label>
+          <label>
+            Costo estimado ($)
+            <input type="number" step="0.01" name="repair_cost" placeholder="0.00" value="0.00">
+          </label>
+          <label style="grid-column: 1 / -1">
+            Diagnóstico inicial / Tareas
+            <textarea name="initial_diagnosis" placeholder="Descripción de la falla o motivo de mantenimiento..." required></textarea>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn secondary" type="button" onclick="cerrarModal('modalMaintenance')">Cancelar</button>
+          <button class="btn primary" type="submit">Guardar orden</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 11: Lista de Técnicos -->
+  <div class="modal" id="modalTechniciansList">
+    <div class="modal-content confirm-card">
+      <div class="modal-header">
+        <div>
+          <h2>Técnicos de Soporte</h2>
+          <p>Personal técnico registrado para asignaciones</p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalTechniciansList')">×</button>
+      </div>
+      <div class="table-scroll" style="margin-bottom:14px">
+        <table>
+          <thead><tr><th>Nombre</th><th>Contacto</th><th>Estado</th></tr></thead>
+          <tbody id="technicians-table-body">
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-actions">
+        <button class="btn primary" type="button" onclick="cerrarModal('modalTechniciansList')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 12: Crear Usuario -->
+  <div class="modal" id="modalUser">
+    <div class="modal-content" style="max-width:620px">
+      <div class="modal-header">
+        <div>
+          <h2>Crear nueva cuenta de usuario</h2>
+          <p>Asigna credenciales y el nivel de acceso correspondiente.</p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalUser')">×</button>
+      </div>
+      <form onsubmit="guardarUsuario(event)">
+        <div class="form-grid">
+          <label>
+            Nombre de usuario (Login)
+            <input name="username" minlength="3" placeholder="Ej: mrodriguez" required autofocus>
+          </label>
+          <label>
+            Rol y privilegios de acceso
+            <select name="role">
+              <option value="visitor">Visitante (Consulta / Préstamos)</option>
+              <option value="admin">Administrador (Acceso Total)</option>
+            </select>
+          </label>
+          <label style="grid-column: 1 / -1">
+            Colaborador vinculado (Opcional)
+            <select name="employee_id" id="user-employee-select">
+              <option value="">Sin colaborador vinculado</option>
+            </select>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn secondary" type="button" onclick="cerrarModal('modalUser')">Cancelar</button>
+          <button class="btn primary" type="submit">Crear usuario</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 13: Ficha Técnica de Hardware (Componentes) -->
+  <div class="modal" id="modalComponents">
+    <div class="modal-content" style="max-width:820px">
+      <div class="modal-header">
+        <div>
+          <h2>Especificaciones de Hardware</h2>
+          <p id="comp-laptop-title">—</p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalComponents')">×</button>
+      </div>
+      <form onsubmit="guardarComponentes(event)">
+        <input type="hidden" id="comp-laptop-id" value="">
+        <div class="form-grid">
+          <label>Procesador<input name="processor" placeholder="Ej: Intel Core i7-1365U"></label>
+          <label>Generación<input name="generation" placeholder="Ej: 13va Gen"></label>
+          <label>Memoria RAM<input name="ram" placeholder="Ej: 16 GB"></label>
+          <label>Tipo de RAM<input name="ram_type" placeholder="Ej: DDR4-3200MHz"></label>
+          <label>Ranuras RAM<input name="ram_slots" placeholder="Ej: 2"></label>
+          <label>Disco Principal<input name="primary_disk" placeholder="Ej: SSD M.2 NVMe 512GB"></label>
+          <label>Tarjeta Gráfica<input name="graphics" placeholder="Ej: Intel Iris Xe"></label>
+          <label>Pantalla<input name="display" placeholder="Ej: 14.0' FHD (1920x1080) IPS"></label>
+          <label>Resolución<input name="resolution" placeholder="Ej: 1920x1080"></label>
+          <label>Batería<input name="battery" placeholder="Ej: 54 Wh ExpressCharge"></label>
+          <label>Sistema Operativo<input name="windows" placeholder="Ej: Windows 11 Pro 64-bit"></label>
+          <label>Antivirus / EDR<input name="antivirus" placeholder="Ej: CrowdStrike / Defender"></label>
+          <label>Dirección MAC<input name="mac_address" placeholder="Ej: 00:1A:2B:3C:4D:5E"></label>
+          <label>Dirección IP asignada<input name="ip_address" placeholder="Ej: 192.168.1.105"></label>
+          <label style="grid-column: 1 / -1">
+            Notas técnicas del equipo
+            <textarea name="notes" placeholder="Historial de ensamblado, reemplazo de partes..."></textarea>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn secondary" type="button" onclick="cerrarModal('modalComponents')">Cancelar</button>
+          <button class="btn primary" type="submit">Guardar especificaciones</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 14: Acta Oficial de Entrega (PDF / Print View) -->
+  <div class="modal" id="modalActaPDF">
+    <div class="modal-content acta-modal-content">
+      <div class="modal-header">
+        <div>
+          <h2>Acta Oficial de Entrega y Responsiva</h2>
+          <p>Documento formal de asignación con firma de conformidad.</p>
+        </div>
+        <button class="close" type="button" onclick="cerrarModal('modalActaPDF')">×</button>
+      </div>
+      <div id="acta-document-content"></div>
+      <div class="modal-actions">
+        <button class="btn secondary" type="button" onclick="cerrarModal('modalActaPDF')">Cerrar</button>
+        <button class="btn primary" type="button" onclick="window.print()">
+          🖨️ Imprimir / Guardar como PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts del Sistema -->
+  <script src="static/js/qrcode.min.js"></script>
+  <script src="static/js/store.js"></script>
+  <script src="static/js/ai-mock.js"></script>
+  <script src="static/js/ai-components.js"></script>
+  <script src="static/js/views.js"></script>
+  <script src="static/js/app.js"></script>
+  <script src="static/js/router.js"></script>
 </body>
 </html>
